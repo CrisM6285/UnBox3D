@@ -7,8 +7,10 @@ namespace UnBox3D.Utils
     public interface ILogger
     {
         void Info(string message);
+        void Debug(string message);
         void Warn(string message);
         void Error(string message);
+        void Fatal(string message);
     }
 
     public class Logger : ILogger
@@ -79,7 +81,7 @@ namespace UnBox3D.Utils
 
                 string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} " +
                                   $"[{level.ToString().ToUpper()}] {message}";
-                _fileSystem.WriteToFile(_logFilePath, logEntry);
+                _fileSystem.AppendToFile(_logFilePath, logEntry + Environment.NewLine);
             }
         }
 
@@ -98,10 +100,10 @@ namespace UnBox3D.Utils
         /// </summary>
         private void RotateLogs()
         {
-            for (int i = _maxArchiveFiles - 1; i >= 0; i--)
+            for (int i = _maxArchiveFiles - 1; i >= 1; i--)
             {
-                string oldLogFilePath = Path.Combine(_logDirectory, $"{_logFileName}.{i}");
-                string newLogFilePath = Path.Combine(_logDirectory, $"{_logFileName}.{i + 1}");
+                string oldLogFilePath = Path.Combine(_logDirectory, $"{_logFileName}.{i - 1}");
+                string newLogFilePath = Path.Combine(_logDirectory, $"{_logFileName}.{i}");
 
                 if (_fileSystem.DoesFileExists(newLogFilePath))
                     _fileSystem.DeleteFile(newLogFilePath);

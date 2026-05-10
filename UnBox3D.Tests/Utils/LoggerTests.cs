@@ -30,7 +30,7 @@ namespace UnBox3D.Tests.Utils
             _logger.Info(logMessage);
 
             // Assert
-            _fileSystemMock.Verify(fs => fs.WriteToFile(_logFilePath, It.Is<string>(s => s.Contains(logMessage))), Times.Once);
+            _fileSystemMock.Verify(fs => fs.AppendToFile(_logFilePath, It.Is<string>(s => s.Contains(logMessage))), Times.Once);
         }
 
         [Fact]
