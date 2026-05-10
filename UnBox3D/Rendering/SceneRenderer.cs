@@ -94,8 +94,6 @@ namespace UnBox3D.Rendering
 
             if (meshes == null || meshes.Count == 0)
             {
-                _logger.Warn("No meshes available for rendering.");
-
                 // Still draw gizmo rings if a mesh was selected before the scene was cleared
                 if (_gizmoMesh != null)
                     _gizmoRenderer.Render(camera.GetViewMatrix(), camera.GetProjectionMatrix(), _gizmoMode, _hoveredGizmoElement);

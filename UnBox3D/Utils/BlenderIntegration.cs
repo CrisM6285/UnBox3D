@@ -17,11 +17,11 @@ namespace UnBox3D.Utils
             _installer = installer ?? throw new ArgumentNullException(nameof(installer));
         }
 
-        public bool RunBlenderScript(string inputModelPath, string outputModelPath, string scriptPath, 
+        public bool RunBlenderScript(string inputModelPath, string outputModelPath, string scriptPath,
             string filename, double doc_width, double doc_height, string ext, out string errorMessage)
         {
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            Debug.WriteLine("baseDirectory: " + baseDirectory);
+            _logger.Info("Blender base directory: " + baseDirectory);
 
             // Fix Blender path construction for publishing
             string blenderExePath = _installer.ExecutablePath;
@@ -62,14 +62,16 @@ namespace UnBox3D.Utils
 
             errorMessage = string.Empty;
 
+            const int blenderTimeoutMs = 30000;
+
             try
             {
                 process.Start();
 
                 // Set a timeout for waiting for Blender to finish
-                if (!process.WaitForExit(30000))
+                if (!process.WaitForExit(blenderTimeoutMs))
                 {
-                    errorMessage = "Process took too long to respond. Terminating...";
+                    errorMessage = $"Blender process exceeded {blenderTimeoutMs / 1000} s timeout. Terminating...";
                     _logger.Warn(errorMessage);
                     ForceTerminateBlender();
                     return false;
@@ -79,11 +81,8 @@ namespace UnBox3D.Utils
                 string output = process.StandardOutput.ReadToEnd();
                 string error = process.StandardError.ReadToEnd();
 
-                _logger.Info("Blender Output: " + output);
-                if (!string.IsNullOrWhiteSpace(error))
-                {
-                    _logger.Warn("Blender Errors: " + error);
-                }
+                if (!string.IsNullOrWhiteSpace(output)) _logger.Info("Blender Output: " + output);
+                if (!string.IsNullOrWhiteSpace(error))  _logger.Warn("Blender Errors: " + error);
 
                 // Extract runtime error message if exists
                 string? runtimeErrorMessage = ExtractRuntimeError(error);
@@ -129,12 +128,13 @@ namespace UnBox3D.Utils
                         _logger.Error("Failed to start taskkill process.");
                         return;
                     }
-                    
+
                     string output = taskKillProcess.StandardOutput.ReadToEnd();
                     string error = taskKillProcess.StandardError.ReadToEnd();
                     taskKillProcess.WaitForExit();
 
-                    _logger.Info("Taskkill Output: " + output);
+                    if (!string.IsNullOrWhiteSpace(output))
+                        _logger.Info("Taskkill Output: " + output);
                     if (!string.IsNullOrWhiteSpace(error))
                     {
                         _logger.Warn("Taskkill Errors: " + error);

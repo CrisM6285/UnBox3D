@@ -307,7 +307,7 @@ namespace UnBox3D.ViewModels
 
         private async Task ProcessUnfolding(string inputModelPath)
         {
-            Debug.WriteLine("Input model is coming from: " + inputModelPath);
+            _logger.Info("Unfolding input model from: " + inputModelPath);
 
             var installWindow = new LoadingWindow
             {
@@ -523,7 +523,7 @@ namespace UnBox3D.ViewModels
                     {
                         await ShowWpfMessageBoxAsync($"The SVG files are too large to be combined into partitioned panels for PDF. Will instead use the fallback PDF which may result in loss of some panels. Exporting will continue.", "Unable to allocate the required memory", MessageBoxButton.OK, MessageBoxImage.Warning);
 
-                        Debug.WriteLine($"incrW: {incrementWidth} incrH: {incrementHeight}");
+                        _logger.Warn($"SVG too large for partitioned panels (incrW={incrementWidth}, incrH={incrementHeight}); using fallback PDF.");
 
                         await Task.Run(() => _blenderIntegration.RunBlenderScript(
                             inputModelPath, outputDirectory, scriptPath,
@@ -1599,7 +1599,7 @@ namespace UnBox3D.ViewModels
                 return parsedColor;
 
             if (!string.IsNullOrWhiteSpace(raw))
-                Debug.WriteLine($"Warning: {labelForLogs} '{raw}' not recognized. Using fallback.");
+                _logger.Warn($"{labelForLogs} color value '{raw}' not recognized; using fallback.");
 
             return fallback;
         }
@@ -1835,7 +1835,7 @@ namespace UnBox3D.ViewModels
         {
             if (_latestImportedModel == null)
             {
-                Debug.WriteLine("ApplyMeshThreshold called but no model is loaded.");
+                _logger.Warn("ApplyMeshThreshold called but no model is loaded.");
                 return;
             }
 

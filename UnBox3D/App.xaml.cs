@@ -264,7 +264,7 @@ namespace UnBox3D
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Failed to clean up export directory: {ex.Message}");
+                        _serviceProvider?.GetService<ILogger>()?.Error($"Failed to clean up export directory: {ex.Message}");
                     }
                 }
             }
