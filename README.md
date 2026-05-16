@@ -1,9 +1,9 @@
 <div align="center">
   <table width="100%">
     <tr>
-      <td align="center"><img src="UnBox3D/Assets/Images/unbox3d-logo.jpg" height="120" width="auto" /></td>
-      <td align="center"><img src="UnBox3D/Assets/Images/csula-logo.png" height="120" width="auto" /></td>
-      <td align="center"><img src="UnBox3D/Assets/Images/armyresearchlab.png" height="120" width="auto" /></td>
+      <td align="center"><img src="docs/images/unbox3d-logo.jpg" height="120" width="auto" /></td>
+      <td align="center"><img src="docs/images/csula-logo.png" height="120" width="auto" /></td>
+      <td align="center"><img src="docs/images/armyresearchlab.png" height="120" width="auto" /></td>
     </tr>
   </table>
 </div>
@@ -19,7 +19,7 @@
 UnBox3D takes any 3D model and flattens it into precise, cut-ready 2D layouts complete with fold annotations, part IDs, and assembly instructions. Built for convenient use with laser cutters and CNC machines.
 
 [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?style=flat-square)](https://dotnet.microsoft.com/)
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-informational?style=flat-square)](https://github.com/alexirez/UnBox3D-Senior-Design-2026)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-informational?style=flat-square)](https://github.com/CrisM6285/UnBox3D)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
 </div>
@@ -44,7 +44,7 @@ UnBox3D takes any 3D model and flattens it into precise, cut-ready 2D layouts co
 
 ## Overview
 
-<img src="UnBox3D/Assets/Images/successful-unfold.jpg" alt="Successful unfold output" align="right" width="380" style="margin-left: 20px; border-radius: 8px;" />
+<img src="docs/images/successful-unfold.jpg" alt="Successful unfold output" align="right" width="380" style="margin-left: 20px; border-radius: 8px;" />
 
 UnBox3D implements a full pipeline from 3D input to fabrication-ready output:
 
@@ -61,7 +61,7 @@ The goal is a consistent, reproducible path from any 3D mesh to physical assembl
 ### Pipeline
 
 <div align="center">
-  <img src="UnBox3D/Assets/Images/unbox3d-pipeline.png" alt="UnBox3D pipeline diagram" width="720" />
+  <img src="docs/images/unbox3d-pipeline.png" alt="UnBox3D pipeline diagram" width="720" />
 </div>
 
 ---
@@ -113,7 +113,7 @@ dotnet --info
 From importing to unfolding, open source tools and libraries are utilized for tried-and-tested moves towards a reliable end result.
 
 <div align="center">
-  <img src="UnBox3D/Assets/Images/techstack.png" alt="Tech stack" width="600" />
+  <img src="docs/images/techstack.png" alt="Tech stack" width="600" />
 </div>
 
 ---
@@ -125,7 +125,7 @@ From importing to unfolding, open source tools and libraries are utilized for tr
 The desktop GUI provides a full 3D viewport with transform gizmos for positioning, rotating, and scaling the mesh before unfolding.
 
 <div align="center">
-  <img src="UnBox3D/Assets/Images/example-gizmos.png" alt="3D viewport with transform gizmos" width="680" />
+  <img src="docs/images/example-gizmos.png" alt="3D viewport with transform gizmos" width="680" />
 </div>
 
 ### Mesh Simplification
@@ -133,7 +133,7 @@ The desktop GUI provides a full 3D viewport with transform gizmos for positionin
 UnBox3D can reduce high-polygon meshes to a manageable face count before unfolding, preserving shape fidelity while making the output suitable for fabrication.
 
 <div align="center">
-  <img src="UnBox3D/Assets/Images/example-simplify.png" alt="Mesh simplification example" width="680" />
+  <img src="docs/images/example-simplify.png" alt="Mesh simplification example" width="680" />
 </div>
 
 ### Typical Workflow
@@ -165,8 +165,8 @@ UnBox3D can reduce high-polygon meshes to a manageable face count before unfoldi
  <summary><b>Clone & Restore</b></summary>
  
  ```bash
- git clone https://github.com/alexirez/UnBox3D-Senior-Design-2026.git
- cd UnBox3D-Senior-Design-2026
+ git clone https://github.com/CrisM6285/UnBox3D.git
+ cd UnBox3D
  dotnet restore
  ```
 </details>
@@ -330,8 +330,8 @@ dotnet publish src/UnBox3D/UnBox3D.csproj -c Release -r osx-arm64  -o ./publish/
 
 ## Contributors
 
-<a href="https://github.com/alexirez/UnBox3D-Senior-Design-2026/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=alexirez/UnBox3D-Senior-Design-2026" alt="Contributors" />
+<a href="https://github.com/CrisM6285/UnBox3D/graphs/contributors?from=2%2F14%2F2026">
+  <img src="https://contrib.rocks/image?repo=CrisM6285/UnBox3D" alt="Contributors" />
 </a>
 
 ---
