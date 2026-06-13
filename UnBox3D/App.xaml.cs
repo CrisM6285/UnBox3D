@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenTK.Mathematics;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using UnBox3D.Controls;
 using UnBox3D.Controls.States;
@@ -21,6 +22,11 @@ namespace UnBox3D
     {
         private static ServiceProvider? _serviceProvider;
         public static ServiceProvider Services => _serviceProvider!;
+
+        public static string Version =>
+            "v" + (Assembly.GetExecutingAssembly()
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                ?.InformationalVersion ?? "?");
 
         protected override void OnStartup(StartupEventArgs e)
         {

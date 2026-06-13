@@ -1,6 +1,7 @@
 <Window x:Class="UnBox3D.Views.AboutWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="clr-namespace:UnBox3D"
         Title="About — UnBox3D"
         Height="420" Width="500"
         ResizeMode="CanResizeWithGrip"
@@ -48,7 +49,7 @@
                                 BorderBrush="{DynamicResource BorderBrushLight}"
                                 BorderThickness="1" CornerRadius="4"
                                 Padding="7,2">
-                            <TextBlock Text="v1.0"
+                            <TextBlock Text="{x:Static app:App.Version}"
                                        FontFamily="Cascadia Code, Consolas" FontSize="11"
                                        Foreground="{DynamicResource HighlightBrush}"/>
                         </Border>
