@@ -58,37 +58,23 @@ namespace UnBox3D
             var themeManager = _serviceProvider.GetRequiredService<IThemeManager>();
             themeManager.ApplySavedTheme(false);
 
-            var splash = new SplashWindow();
-            splash.Show();
-
-            var timer = new System.Windows.Threading.DispatcherTimer
+            // Launch straight to the main menu. SplashWindow is kept in the project
+            // for a future feature loading scree, rather than a fixed time delay.
+            try
             {
-                Interval = TimeSpan.FromMilliseconds(1700)
-            };
-            timer.Tick += (s, args) =>
+                var menu = _serviceProvider.GetRequiredService<MainMenuWindow>();
+                Current.MainWindow = menu;
+                menu.Show();
+            }
+            catch (Exception ex)
             {
-                timer.Stop();
-                try
-                {
-                    var menu = _serviceProvider.GetRequiredService<MainMenuWindow>();
-                    Current.MainWindow = menu;
-                    menu.Show();      // open menu BEFORE closing splash
-                    splash.Close();   // now safe — a window is already open
-                }
-                catch (Exception ex)
-                {
-                    // Keep splash alive so the app doesn't exit with no windows,
-                    // then show the real error before shutting down cleanly.
-                    System.Windows.MessageBox.Show(
-                        $"Startup failed:\n\n{ex.GetType().Name}: {ex.Message}\n\n{ex.InnerException?.Message}",
-                        "UnBox3D — Startup Error",
-                        System.Windows.MessageBoxButton.OK,
-                        System.Windows.MessageBoxImage.Error);
-                    splash.Close();
-                    Shutdown(1);
-                }
-            };
-            timer.Start();
+                System.Windows.MessageBox.Show(
+                    $"Startup failed:\n\n{ex.GetType().Name}: {ex.Message}\n\n{ex.InnerException?.Message}",
+                    "UnBox3D — Startup Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+                Shutdown(1);
+            }
         }
 
         private ServiceProvider ConfigureServices()
