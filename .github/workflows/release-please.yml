@@ -35,11 +35,15 @@ jobs:
           $v = (Get-Content .release-please-manifest.json | ConvertFrom-Json)."."
           echo "version=$v" >> $env:GITHUB_OUTPUT
 
-      - name: Build
-        run: dotnet build UnBox3D/UnBox3D.sln -c Release -p:Version=${{ steps.version.outputs.version }} --nologo
+      - name: Publish
+        run: dotnet publish UnBox3D/UnBox3D.csproj -c Release -r win-x64 --self-contained -p:Version=${{ steps.version.outputs.version }} --nologo -o publish
+
+      - name: Zip artifact
+        shell: pwsh
+        run: Compress-Archive -Path publish\* -DestinationPath UnBox3D-${{ needs.release-please.outputs.tag_name }}.zip
 
       - name: Attach artifact to release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.release-please.outputs.tag_name }}
-          files: UnBox3D/bin/Release/net8.0-windows/UnBox3D.exe
+          files: UnBox3D-${{ needs.release-please.outputs.tag_name }}.zip
