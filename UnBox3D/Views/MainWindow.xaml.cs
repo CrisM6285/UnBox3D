@@ -148,8 +148,6 @@ namespace UnBox3D.Views
 
                 loadingWindow.Close();
 
-                PlayEntranceAnimations();
-
                 if (_controlHost is not null)
                 {
                     openGLHost.Child = (Control)_controlHost;
@@ -289,40 +287,6 @@ namespace UnBox3D.Views
                 NotifyBanner.BeginAnimation(OpacityProperty, fadeOut);
             };
             _notifyTimer.Start();
-        }
-
-        private void PlayEntranceAnimations()
-        {
-            var ease = new CubicEase { EasingMode = EasingMode.EaseOut };
-            const int dur = 420;
-
-            ToolbarBorder.Opacity = 0;
-            ToolbarBorder.RenderTransform = new System.Windows.Media.TranslateTransform(0, -32);
-            ToolbarBorder.BeginAnimation(OpacityProperty,
-                new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(dur)) { EasingFunction = ease });
-            ((System.Windows.Media.TranslateTransform)ToolbarBorder.RenderTransform)
-                .BeginAnimation(System.Windows.Media.TranslateTransform.YProperty,
-                    new DoubleAnimation(-32, 0, TimeSpan.FromMilliseconds(dur)) { EasingFunction = ease });
-
-            HierarchyPanel.Opacity = 0;
-            HierarchyPanel.RenderTransform = new System.Windows.Media.TranslateTransform(-40, 0);
-            HierarchyPanel.BeginAnimation(OpacityProperty,
-                new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(dur))
-                { EasingFunction = ease, BeginTime = TimeSpan.FromMilliseconds(80) });
-            ((System.Windows.Media.TranslateTransform)HierarchyPanel.RenderTransform)
-                .BeginAnimation(System.Windows.Media.TranslateTransform.XProperty,
-                    new DoubleAnimation(-40, 0, TimeSpan.FromMilliseconds(dur))
-                    { EasingFunction = ease, BeginTime = TimeSpan.FromMilliseconds(80) });
-
-            ToolsPanel.Opacity = 0;
-            ToolsPanel.RenderTransform = new System.Windows.Media.TranslateTransform(40, 0);
-            ToolsPanel.BeginAnimation(OpacityProperty,
-                new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(dur))
-                { EasingFunction = ease, BeginTime = TimeSpan.FromMilliseconds(160) });
-            ((System.Windows.Media.TranslateTransform)ToolsPanel.RenderTransform)
-                .BeginAnimation(System.Windows.Media.TranslateTransform.XProperty,
-                    new DoubleAnimation(40, 0, TimeSpan.FromMilliseconds(dur))
-                    { EasingFunction = ease, BeginTime = TimeSpan.FromMilliseconds(160) });
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)
