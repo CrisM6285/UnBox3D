@@ -122,17 +122,21 @@ namespace UnBox3D.Views
             {
                 _logger?.Info("MainWindow loaded. Initializing OpenGL...");
 
-                // Ensure Blender is installed
-                var loadingWindow = new LoadingWindow
+                // Only show the install progress window when Blender is actually missing.
+                if (_blenderInstaller == null)
                 {
-                    StatusHint = "Installing Blender...",
-                    Owner = this,
-                    IsProgressIndeterminate = false
-                };
-                loadingWindow.Show();
+                    _logger?.Warn("Blender installer dependency was null; skipping installation check.");
+                }
+                else if (!_blenderInstaller.IsBlenderInstalled())
+                {
+                    var loadingWindow = new LoadingWindow
+                    {
+                        StatusHint = "Installing Blender...",
+                        Owner = this,
+                        IsProgressIndeterminate = false
+                    };
+                    loadingWindow.Show();
 
-                if (_blenderInstaller != null)
-                {
                     var progress = new Progress<double>(value =>
                     {
                         loadingWindow.UpdateProgress(value * 100);
@@ -140,13 +144,9 @@ namespace UnBox3D.Views
                     });
 
                     await _blenderInstaller.CheckAndInstallBlender(progress);
-                }
-                else
-                {
-                    _logger?.Warn("Blender installer dependency was null; skipping installation check.");
-                }
 
-                loadingWindow.Close();
+                    loadingWindow.Close();
+                }
 
                 if (_controlHost is not null)
                 {
@@ -466,7 +466,7 @@ namespace UnBox3D.Views
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             var settings = ActivatorUtilities.CreateInstance<SettingsWindow>(App.Services);
-            
+
             var settingsManager = App.Services.GetRequiredService<ISettingsManager>();
             settings.Initialize(_logger, settingsManager);
 
