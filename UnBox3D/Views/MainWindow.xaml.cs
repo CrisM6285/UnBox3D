@@ -122,17 +122,21 @@ namespace UnBox3D.Views
             {
                 _logger?.Info("MainWindow loaded. Initializing OpenGL...");
 
-                // Ensure Blender is installed
-                var loadingWindow = new LoadingWindow
+                // Only show the install progress window when Blender is actually missing.
+                if (_blenderInstaller == null)
                 {
-                    StatusHint = "Installing Blender...",
-                    Owner = this,
-                    IsProgressIndeterminate = false
-                };
-                loadingWindow.Show();
+                    _logger?.Warn("Blender installer dependency was null; skipping installation check.");
+                }
+                else if (!_blenderInstaller.IsBlenderInstalled())
+                {
+                    var loadingWindow = new LoadingWindow
+                    {
+                        StatusHint = "Installing Blender...",
+                        Owner = this,
+                        IsProgressIndeterminate = false
+                    };
+                    loadingWindow.Show();
 
-                if (_blenderInstaller != null)
-                {
                     var progress = new Progress<double>(value =>
                     {
                         loadingWindow.UpdateProgress(value * 100);
@@ -140,15 +144,9 @@ namespace UnBox3D.Views
                     });
 
                     await _blenderInstaller.CheckAndInstallBlender(progress);
-                }
-                else
-                {
-                    _logger?.Warn("Blender installer dependency was null; skipping installation check.");
-                }
 
-                loadingWindow.Close();
-
-                PlayEntranceAnimations();
+                    loadingWindow.Close();
+                }
 
                 if (_controlHost is not null)
                 {
@@ -289,40 +287,6 @@ namespace UnBox3D.Views
                 NotifyBanner.BeginAnimation(OpacityProperty, fadeOut);
             };
             _notifyTimer.Start();
-        }
-
-        private void PlayEntranceAnimations()
-        {
-            var ease = new CubicEase { EasingMode = EasingMode.EaseOut };
-            const int dur = 420;
-
-            ToolbarBorder.Opacity = 0;
-            ToolbarBorder.RenderTransform = new System.Windows.Media.TranslateTransform(0, -32);
-            ToolbarBorder.BeginAnimation(OpacityProperty,
-                new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(dur)) { EasingFunction = ease });
-            ((System.Windows.Media.TranslateTransform)ToolbarBorder.RenderTransform)
-                .BeginAnimation(System.Windows.Media.TranslateTransform.YProperty,
-                    new DoubleAnimation(-32, 0, TimeSpan.FromMilliseconds(dur)) { EasingFunction = ease });
-
-            HierarchyPanel.Opacity = 0;
-            HierarchyPanel.RenderTransform = new System.Windows.Media.TranslateTransform(-40, 0);
-            HierarchyPanel.BeginAnimation(OpacityProperty,
-                new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(dur))
-                { EasingFunction = ease, BeginTime = TimeSpan.FromMilliseconds(80) });
-            ((System.Windows.Media.TranslateTransform)HierarchyPanel.RenderTransform)
-                .BeginAnimation(System.Windows.Media.TranslateTransform.XProperty,
-                    new DoubleAnimation(-40, 0, TimeSpan.FromMilliseconds(dur))
-                    { EasingFunction = ease, BeginTime = TimeSpan.FromMilliseconds(80) });
-
-            ToolsPanel.Opacity = 0;
-            ToolsPanel.RenderTransform = new System.Windows.Media.TranslateTransform(40, 0);
-            ToolsPanel.BeginAnimation(OpacityProperty,
-                new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(dur))
-                { EasingFunction = ease, BeginTime = TimeSpan.FromMilliseconds(160) });
-            ((System.Windows.Media.TranslateTransform)ToolsPanel.RenderTransform)
-                .BeginAnimation(System.Windows.Media.TranslateTransform.XProperty,
-                    new DoubleAnimation(40, 0, TimeSpan.FromMilliseconds(dur))
-                    { EasingFunction = ease, BeginTime = TimeSpan.FromMilliseconds(160) });
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)
@@ -502,7 +466,7 @@ namespace UnBox3D.Views
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             var settings = ActivatorUtilities.CreateInstance<SettingsWindow>(App.Services);
-            
+
             var settingsManager = App.Services.GetRequiredService<ISettingsManager>();
             settings.Initialize(_logger, settingsManager);
 

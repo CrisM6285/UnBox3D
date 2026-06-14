@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using Application = System.Windows.Application;
@@ -85,26 +86,41 @@ namespace UnBox3D.Views
 
         private void Open_Click(object? sender, RoutedEventArgs e)
         {
-            var picker = new OpenExistingWindow { Owner = this };
-            if (picker.ShowDialog() == true && !string.IsNullOrWhiteSpace(picker.ImportedFilePath))
+            var dialog = new Microsoft.Win32.OpenFileDialog
             {
-                var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault()
-                           ?? App.Services.GetRequiredService<MainWindow>();
+                Title = "Select project or model",
+                DefaultExt = "3D Models",
+                Filter = "3D Models (*.obj;)|*.obj;",
+                CheckFileExists = true,
+                Multiselect = false
+            };
 
-                var glHost = App.Services.GetService<IGLControlHost>();
-                var logger = App.Services.GetService<ILogger>();
-                var blender = App.Services.GetService<IBlenderInstaller>();
-                if (glHost != null && logger != null && blender != null)
-                    main.Initialize(glHost, logger, blender);
+            var defaultDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "UnBox3D", "Projects");
+            if (Directory.Exists(defaultDir))
+                dialog.InitialDirectory = defaultDir;
 
-                if (!main.IsVisible) main.Show();
-                main.Activate();
+            // CheckFileExists guarantees a real file, so the chosen path needs no
+            // further validation before handing it to MainWindow.
+            if (dialog.ShowDialog(this) != true)
+                return;
 
-                main.OpenFromPath(picker.ImportedFilePath);
+            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault()
+                       ?? App.Services.GetRequiredService<MainWindow>();
 
-                Close();
-            }
+            var glHost = App.Services.GetService<IGLControlHost>();
+            var logger = App.Services.GetService<ILogger>();
+            var blender = App.Services.GetService<IBlenderInstaller>();
+            if (glHost != null && logger != null && blender != null)
+                main.Initialize(glHost, logger, blender);
 
+            if (!main.IsVisible) main.Show();
+            main.Activate();
+
+            main.OpenFromPath(dialog.FileName);
+
+            Close();
         }
 
         private void Help_Click(object? sender, RoutedEventArgs e)
